@@ -3,6 +3,7 @@ import config from "./config";
 import initDB, { pool } from "./config/db";
 import logger from "./middleware/logger";
 import { userRoutes } from "./modules/user/user.routes";
+import { authRouter } from "./modules/auth/auth.routes";
 
 
 
@@ -30,47 +31,9 @@ app.get('/' ,logger, (req: Request, res: Response) => {
 app.use("/users", userRoutes)
 
 
-app.post("/todos", async(req: Request, res: Response)=>{
-  const {user_id , title}= req.body;
+// app.use("/todos", todoRoutes)
 
-  try{
-const result = await pool.query(`INSERT INTO todos(user_id, title) VALUES($1, $2) RETURNING *`,[user_id, title] 
-
-);
-// console.log(result.rows[0]);
-res.status(201).json({
-    success: true,
-    message: "Todo Created Successfully",
-    data: result.rows[0],
-  })
-
-}
-catch(err: any){
-  res.status(500).json({
-    success: false,
-    message: err.message
-  })
-}
-})
-
-app.get("/todos", async(req: Request, res: Response)=>{
-  try{
-    const result = await pool.query(`SELECT * FROM todos`);
-    res.status(200).json({
-      success: true,
-      message: "Todos retrieved successfully",
-      data: result.rows,
-
-    })
-
-  }catch(err:any){
-    res.status(500).json({
-      success: false,
-      message: err.message,
-      details: err
-    })
-  }
-})
+app.use("/auth", authRouter)
 
 app.use((req, res)=>{
 res.status(404).json({
