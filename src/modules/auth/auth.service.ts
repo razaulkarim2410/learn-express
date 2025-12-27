@@ -2,6 +2,8 @@
 import bcrypt from "bcryptjs"
 import { pool } from "../../config/db";
 import jwt from'jsonwebtoken';
+import config from "../../config";
+
 
 const loginUser = async(email: string, password: string)=>{
     const result = await pool.query(`SELECT * FROM users WHERE email=$1`, [email]);
@@ -13,9 +15,9 @@ const loginUser = async(email: string, password: string)=>{
     if(!match){
      return false;   
     }
-const secret ="KMUFsIDTnFmyG3nMiGM6H9FNFUROf3wh7SmqJp-QV30"
 
-    const token = jwt.sign({user: user.name, email: user.email}, secret,{
+
+    const token = jwt.sign({user: user.name, email: user.email, role: user.role}, config.jwtSecret as string,{
         expiresIn: "7d", 
     } );
     console.log ({token});
