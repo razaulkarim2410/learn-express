@@ -8,8 +8,8 @@ const router = express.Router();
 router.post("/", userController.createUser)
 
 
-router.get("/", logger, auth("admin"), userController.getUser)
-router.get("/:id",  userController.getUser)
+router.get("/", logger, auth("admin"), userController.getUser);
+router.get("/:id", auth("admin", "user"),  userController.getSingleuser)
 
 router.put("/:id", userController.updateUser);
 
